@@ -19,7 +19,7 @@ read_cmos_status
     out 0x70, al                ; print hex
     jmp $+2
     in al, 0x71
-    or dx, dx
+    xor dx, dx
     mov dl, al
     call print_hex
 
