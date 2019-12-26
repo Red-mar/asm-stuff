@@ -6,9 +6,9 @@ KERNEL_OFFSET equ 0x1000
     mov sp, bp
 
 
+    call print_keyboard
+    jmp $
 
-    call cursor
-   
 ;    call load_kernel
 ;
 ;    mov bx, MSG_LOADED
@@ -21,6 +21,7 @@ KERNEL_OFFSET equ 0x1000
 %include "prints.asm"
 %include "disk_load.asm"
 %include "switch_pm.asm"
+%include "keyboard.asm"
 
 [bits 16]
 cursor:
