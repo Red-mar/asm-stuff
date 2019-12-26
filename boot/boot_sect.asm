@@ -24,38 +24,37 @@ KERNEL_OFFSET equ 0x1000
 
 [bits 16]
 cursor:
-    mov cx, 0x0007
-    mov ah, 0x01
+    mov cx, 0x0007              ; fill line 0 - 7
+    mov ah, 0x01                ; set cursor shape
     int 0x10
     call set_cursor
     ret
 
 set_cursor:
-    mov dh, 0x0f
-    mov dl, 0x00
-    mov bh, 0x0
+    mov dx, 0x0f00              ; dh = row, dl = column
+    mov bh, 0x0                 ; page number[?]
 cur_loop:
     inc dl
-    mov ah, 0x02
+    mov ah, 0x02                ; set cursor pos
     int 0x10
-    call sleep_bios_time
+    call sleep_bios
     jmp cur_loop
     ret
 
 ticks dd 0
-sleep_bios_time:
-    mov ah, 0x00                ; set ticks cx:dx
+sleep_bios:
+    pusha
+    mov ah, 0x00                ; get ticks cx:dx
     int 0x1A
-    call print_hex
-    mov dword [ticks], edx
-
-    call print_hex
-    jmp $
-
+    mov word [ticks], cx        ; NOTE: not used
+    mov word [ticks+2], dx      ; save ticks
+    add word [ticks+2], 0x0001  ; when to end sleep
+sleep_bios_loop:
+    int 0x1A                    ; get ticks again
+    cmp word [ticks+2], dx      ; check again if not
+    jne sleep_bios_loop         ; yet at end sleep
+    popa
     ret
-
-
-
 
 [bits 16]
 load_kernel:
