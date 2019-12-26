@@ -4,6 +4,7 @@
 # @file
 # @version 0.1
 
+ASM_SOURCES = $(wildcard boot/*.asm)
 C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
 HEADERS = $(wildcard kernel/*.c drivers/*.c)
 
@@ -26,7 +27,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 %.o : %.asm
 	nasm $< -f elf64 -o $@
 
-%.bin : %.asm
+%.bin : $(ASM_SOURCES)
 	nasm $< -f bin -I 'boot/' -o $@
 
 clean:
