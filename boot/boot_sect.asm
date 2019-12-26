@@ -24,6 +24,7 @@
     [bits 16]
 
 main_loop:
+    call clear_vmem
     call print_dx
     call set_cursor_pos
     call draw_pixel
@@ -31,6 +32,17 @@ main_loop:
     call sleep_bios
     call input
     jmp main_loop
+    ret
+
+clear_vmem:
+    pusha
+    mov ebx, 0xa0000            ; go to memory start
+write_loop:
+    mov word [ebx], 0           ; write 0
+    inc ebx                     ; increase mem pointer
+    cmp ebx, 0xb1000            ; check if at the end
+    jne write_loop              ; if not more 0's
+    popa
     ret
 
 draw_pixel:
@@ -48,7 +60,7 @@ draw_pixel:
 
 print_dx:
     push dx
-    mov dx, 0x0101
+    mov dx, 0x0f01
     call set_cursor_pos
     pop dx
     call print_hex
