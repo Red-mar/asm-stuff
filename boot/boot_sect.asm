@@ -1,14 +1,11 @@
 [org 0x7c00]
-KERNEL_OFFSET equ 0x1000
-    mov [BOOT_DRIVE], dl
+;KERNEL_OFFSET equ 0x1000
 
     mov bp, 0x9000
     mov sp, bp
 
-
-    call set_cursor_shape
+    call init
     call main_loop
-    jmp $
 
 ;    call load_kernel
 ;
@@ -20,25 +17,54 @@ KERNEL_OFFSET equ 0x1000
     jmp $
 
 %include "prints.asm"
-%include "disk_load.asm"
-%include "switch_pm.asm"
+;; %include "disk_load.asm"
+;; %include "switch_pm.asm"
 %include "input.asm"
 
-[bits 16]
+    [bits 16]
+
 main_loop:
+    call print_dx
+    call set_cursor_pos
+    call draw_pixel
+
     call sleep_bios
     call input
-    call set_cursor_pos
     jmp main_loop
+    ret
 
-set_cursor_shape:
-    mov cx, 0x0007              ; fill line 0 - 7
-    mov ah, 0x01                ; set cursor shape
+draw_pixel:
+    pusha
+    mov bx, dx                  ; save the cursor pos
+    mov ah, 0x0C                ; draw graphics pixel
+    mov al, 0x0f                ; color
+    mov cl, bl                  ; position in cx:dx
+    mov dl, bh
+    xor ch, ch                  ; since cursor pos is only 1 bytes
+    xor dh, dh                  ; higher bytes will have to be cleared
     int 0x10
+    popa
+    ret
+
+print_dx:
+    push dx
+    mov dx, 0x0101
+    call set_cursor_pos
+    pop dx
+    call print_hex
+    ret
+
+init:
+    mov al, 0x6A                ; init graphics mode
+    mov ah, 0x00                ; 800x600 16 color (?)
+    int 0x10
+;    mov cx, 0x0007              ; fill line 0 - 7
+;    mov ah, 0x01                ; set cursor shape
+;    int 0x10
     ret
 
 set_cursor_pos:                     ; dh = row, dl = column
-    mov bh, 0x0                 ; page number[?]
+    mov bh, 0x00
     mov ah, 0x02
     int 0x10
     ret
@@ -58,18 +84,18 @@ sleep_bios_loop:
     popa
     ret
 
-[bits 16]
-load_kernel:
-    mov bx, KERNEL_OFFSET
-    mov dh, 15
-    mov dl, [BOOT_DRIVE]
-    call disk_load
-    ret
-
-[bits 32]
-BEGIN_PM:
-    call KERNEL_OFFSET
-    jmp $
+;[bits 16]
+;load_kernel:
+;    mov bx, KERNEL_OFFSET
+;    mov dh, 15
+;    mov dl, [BOOT_DRIVE]
+;    call disk_load
+;    ret
+;
+;[bits 32]
+;BEGIN_PM:
+;    call KERNEL_OFFSET
+;    jmp $
 
 ;MSG_REAL_MODE db "16-bit mode", 0
 ;MSG_PROT_MODE db "32-bit protected mode", 0
