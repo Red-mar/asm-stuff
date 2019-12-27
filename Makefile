@@ -12,20 +12,21 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: os-image
 
+# TODO: crosscompiler
 run: all
-	qemu-system-x86_64 -drive format=raw,file=os-image,if=floppy
+	qemu-system-i386 -drive format=raw,file=os-image,if=floppy
 
 os-image: boot/boot_sect.bin kernel.bin
 	cat $^ > os-image
 
-kernel.bin: kernel/kernel_entry.o ${OBJ}
-	ld -o $@ -Ttext 0x1000 $^ --oformat binary
+kernel.bin: ${OBJ}
+	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
 %.o: %.c ${HEADERS}
-	gcc -ffreestanding -c $< -o $@
+	gcc -fno-pie -m32 -ffreestanding -c $< -o $@
 
 %.o : %.asm
-	nasm $< -f elf64 -o $@
+	nasm $< -f elf -o $@
 
 %.bin : $(ASM_SOURCES)
 	nasm $< -f bin -I 'boot/' -o $@
