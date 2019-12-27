@@ -23,7 +23,7 @@ clear_vmem:
     mov cx, bx
     add cx, 0xd000
 write_loop:
-    mov byte [es:bx], 0xffff
+    mov byte [es:bx], 0xff
     add bx, 1                     ; increase mem pointer
     cmp bx, cx            ; check if at the end
     jne write_loop              ; if not more 0's
@@ -64,7 +64,6 @@ print_dx:
     pop dx
     call print_hex
     ret
-
 
 set_cursor_pos:                     ; dh = row, dl = column
     pusha

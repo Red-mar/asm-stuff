@@ -53,7 +53,7 @@ hex_c2_end:
 print:
     pusha
     push bx
-    mov bh, byte [n_page]
+    mov bh, 0x00
     mov ah, 0x0e                ; tty..
     pop bx
 print_loop:
@@ -64,7 +64,7 @@ print_loop:
 ;    mov bh, al
 ;    and bx, 0x000e              ; color depend on pointer hack :)
     mov bl, 0x05
-    mov bh, byte [n_page]
+    mov bh, 0x00
     int 0x10                    ; else print it
     pop bx
     add bx, 0x0001              ; advance the pointer

@@ -28,4 +28,4 @@ sector_error:
 DISK_ERROR_MSG: db "Disk read error!!", 0
 SECTOR_ERROR_MSG: db "Did not read enough sectors", 0
 
-BOOT_DRIVE: db 0
+
