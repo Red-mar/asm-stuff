@@ -52,7 +52,10 @@ hex_c2_end:
 
 print:
     pusha
+    push bx
+    mov bh, byte [n_page]
     mov ah, 0x0e                ; tty..
+    pop bx
 print_loop:
     mov al, [bx]                ; get the char
     cmp al, 0                   ; if 0 end
@@ -60,7 +63,8 @@ print_loop:
     push bx
 ;    mov bh, al
 ;    and bx, 0x000e              ; color depend on pointer hack :)
-    mov bx, 0x0005
+    mov bl, 0x05
+    mov bh, byte [n_page]
     int 0x10                    ; else print it
     pop bx
     add bx, 0x0001              ; advance the pointer

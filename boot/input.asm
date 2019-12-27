@@ -18,6 +18,7 @@
 
 
 input:                          ; nonblocking input NOTE: only one key
+    push ax
     mov ah, 0x01                ; check if key is available
     int 0x16
     jz input_end                ; if not end
@@ -47,4 +48,5 @@ input_down:
 input_unknown:
     call print_hex
 input_end:
+    pop ax
     ret
