@@ -25,8 +25,6 @@ void scroll() {
 }
 
 void putc(char c) {
-
-
     unsigned short attribute = 0x05 << 8;
     unsigned short* where = vmem + ((crs.y * SCREEN_WIDTH) + crs.x);
     unsigned short ch = attribute | c;
@@ -55,6 +53,20 @@ void print(char* s) {
         s += 1;
         c = *s;
     }
+}
+
+// best print c:
+void print_hex(int c) {
+    const char* hex = "0123456789ABCDEF";
+    char* result = "0x00000000";
+    for (int result_i = 9;
+         result_i >= 2;
+         result_i--) {
+        char bit = (c & 0x000000F);
+        c = c >> 4;
+        *(result + result_i) = *(hex + bit);
+    }
+    print(result);
 }
 
 void init() {

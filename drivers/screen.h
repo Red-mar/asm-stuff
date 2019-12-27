@@ -11,6 +11,7 @@
 
 void putc(char c);
 void print(char* s);
+void print_hex(int c);
 void init();
 
 struct Cursor {
