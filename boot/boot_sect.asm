@@ -5,11 +5,9 @@ MULTIBOOT_HEADER_FLAGS: equ 0x00000003
 MULTIBOOT_HEADER_CHECKSUM: equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
 
 
-    push edx
-
-    mov edx, [0x0]
-    call print_hex
-    pop edx
+    mov al, 0x03                ; init graphics mode
+    mov ah, 0x00
+    int 0x10
 
     mov [BOOT_DRIVE], dl
 
@@ -19,8 +17,6 @@ MULTIBOOT_HEADER_CHECKSUM: equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS
     call load_kernel
 
     call switch_to_pm
-    mov edx, 0xdeadbeef
-    call print_hex
 ;    call load_kernel
 ;
 ;    mov bx, MSG_LOADED
