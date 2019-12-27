@@ -3,7 +3,7 @@ print_hex:
 
     xor cl, cl
 iter_hex:
-    shr dx, 0x1                 ; shift the adress
+    shr edx, 0x1                 ; shift the adress
     jc bzero                    ; if cf is zero go to z
 
     shr cl, 1                   ;shift by one
@@ -46,7 +46,7 @@ hex_c2_end:
     mov bx, HEX_OUT
     call print                  ; finally print hex_out!
     mov byte [hex_i], 4
-    mov byte [full_hex_i], 6
+    mov byte [full_hex_i], 10
     popa
     ret
 
@@ -74,8 +74,8 @@ print_loop_end:
     ret
 
 hex_i:   db 4
-full_hex_i:   db 6
-HEX_OUT: db '0x0000', 0
+full_hex_i:   db 10
+HEX_OUT: db '0x00000000', 0
 hex_chars: db '0123456789ABCDEF'
 
 ;[bits 32]
