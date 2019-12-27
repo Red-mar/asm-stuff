@@ -58,8 +58,6 @@ depht:   dd 32
 BEGIN_PM:
     mov eax, 0x2badb002
     mov ebx, multiboot_header
-    push ebx
-    push eax
     call KERNEL_OFFSET
     jmp $
 
