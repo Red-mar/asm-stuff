@@ -23,7 +23,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
 %.o: %.c ${HEADERS}
-	gcc -fno-pie -m32 -ffreestanding -c $< -o $@
+	gcc -fno-pie -m32 -nostdlib -lgcc -ffreestanding -c $< -o $@
 
 %.o : %.asm
 	nasm $< -f elf32 -o $@
