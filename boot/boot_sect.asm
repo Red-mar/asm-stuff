@@ -1,10 +1,5 @@
 [org 0x7c00]
 KERNEL_OFFSET equ 0x1000
-MULTIBOOT_HEADER_MAGIC: equ 0x1badb002
-MULTIBOOT_HEADER_FLAGS: equ 0x00000003
-MULTIBOOT_HEADER_CHECKSUM: equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
-
-
     mov al, 0x03                ; init graphics mode
     mov ah, 0x00
     int 0x10
@@ -17,18 +12,12 @@ MULTIBOOT_HEADER_CHECKSUM: equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS
     call load_kernel
 
     call switch_to_pm
-;    call load_kernel
-;
-;    mov bx, MSG_LOADED
-;    call print
-;
-;    call switch_to_pm
-
     jmp $
 
 %include "prints.asm"
 %include "disk_load.asm"
 %include "switch_pm.asm"
+%include "multiboot.asm"
 
 [bits 16]
 load_kernel:
@@ -39,6 +28,11 @@ load_kernel:
     ret
 
 BOOT_DRIVE: db 0xff
+
+MULTIBOOT_HEADER_MAGIC: equ 0x1badb002
+MULTIBOOT_HEADER_FLAGS: equ 0x00000003
+MULTIBOOT_HEADER_CHECKSUM: equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+
 ALIGN 4
 multiboot_header:
 multiboot_magic: dd MULTIBOOT_HEADER_MAGIC
@@ -52,15 +46,8 @@ depht:   dd 32
 
 [bits 32]
 BEGIN_PM:
-    mov eax, 0x2badb002
-    mov ebx, multiboot_header
     call KERNEL_OFFSET
     jmp $
-
-;MSG_REAL_MODE db "16-bit mode", 0
-;MSG_PROT_MODE db "32-bit protected mode", 0
-;MSG_LOAD_KERNEL db "Loading KERNEL", 0
-;MSG_LOADED db "Loaded KERNEL", 0
 
 times 510-($-$$) db 0           ;fill empty space
 dw 0xaa55                       ;magic number
