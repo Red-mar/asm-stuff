@@ -9,6 +9,8 @@
 #include "../kernel/low_level_io.h"
 #include "../kernel/system.h"
 
+void set_cursor();
+
 void putc(char c);
 void print(char* s);
 void print_hex(int c);

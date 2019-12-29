@@ -5,7 +5,7 @@ struct Cursor crs = {0, 0};
 
 void set_cursor() {
     outb(0x3D4, 14);
-    outb(0x3D5, crs.y * SCREEN_WIDTH + (crs.x >> 8));
+    outb(0x3D5, (crs.y * SCREEN_WIDTH + crs.x) >> 8);
     outb(0x3D4, 15);
     outb(0x3D5, crs.y * SCREEN_WIDTH + crs.x);
 }
