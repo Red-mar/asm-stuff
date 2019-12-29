@@ -17,7 +17,6 @@ KERNEL_OFFSET equ 0x1000
 %include "prints.asm"
 %include "disk_load.asm"
 %include "switch_pm.asm"
-%include "multiboot.asm"
 
 [bits 16]
 load_kernel:
